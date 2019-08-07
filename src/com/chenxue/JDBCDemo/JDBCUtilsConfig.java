@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 public class JDBCUtilsConfig {
@@ -16,7 +19,7 @@ public class JDBCUtilsConfig {
 		try {
 			readConfig();
 			Class.forName(driverClass);
-			Connection con = DriverManager.getConnection(url, user, password);
+			con = DriverManager.getConnection(url, user, password);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -25,7 +28,6 @@ public class JDBCUtilsConfig {
 	}
 	private static void readConfig() throws Exception {
 		InputStream in = JDBCDemo.class.getClassLoader().getResourceAsStream("database.properties");
-		System.out.println(in);
 		Properties pro = new Properties();
 		pro.load(in);
 		driverClass = pro.getProperty("driverClass");
@@ -37,5 +39,33 @@ public class JDBCUtilsConfig {
 	}
 	public static Connection getConnection() {
 		return con;
+	}
+	public static void close(Connection con,Statement stat,ResultSet rs) {
+		if (rs!=null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (stat!=null) {
+			try {
+				stat.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (con!=null) {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("close");
+		
 	}
 }
